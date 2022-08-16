@@ -4,17 +4,25 @@
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
         <link href="/static/styles.css" rel="stylesheet">
-        <title>Birthdays</title>
+        <title>myBirthdays</title>
     </head>
     <body>
         <div class="header">
-            <h1>Birthdays</h1>
-        </div>
+            <h1>myBirthdays</h1>
+            <h3>Patrick Burke - NYC - 2022</h3>
+        </div>s
         <div class="container">
             <div class="section">
 
                 <h2>Add a Birthday</h2>
-                <!-- TODO: Create a form for users to submit a name, a month, and a day -->
+                <!-- Form for users to submit a name, a month, and a day -->
+                    <form action="/" method="post">
+                        <!-- textbox to input name-->
+                        <input autocomplete="off" autofocus name="name" placeholder="Name" type="text">
+                        <input autocomplete="off" name="month" placeholder="Month" type="number" min="1" max="12">
+                        <input autocomplete="off" name="day" placeholder="Day" type="number" min="1" max="31">
+                        <input type="submit" value="Add Birthday">
+                    </form>
             </div>
 
             <div class="section">
@@ -28,7 +36,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- TODO: Loop through the database entries to display them in this table -->
+                        <!-- Jinja loop to autopopulate birthdays from sqlite database into html table-->
+                        {% for birthday in birthdays %}
+                            <tr>
+                                <td>{{ birthday.name }}</td>
+                                <td>{{ birthday.month }}/{{ birthday.day }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
