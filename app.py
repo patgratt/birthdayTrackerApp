@@ -1,22 +1,14 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request,
+from flask import Flask, redirect, render_template, request
 
-# Configure application
+# Create Flask App
 app = Flask(__name__)
 
-# Ensure templates are auto-reloaded
+# This allows templates to auto reload when their content are changed
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# Configure CS50 Library to use SQLite database
+# Connects local sqlite database using cs50 library
 db = SQL("sqlite:///birthdays.db")
-
-# Ensure responses aren't cached
-@app.after_request
-def after_request(response):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
 
 # Define primary route
 @app.route("/", methods=["GET", "POST"])
@@ -29,7 +21,7 @@ def index():
         day = request.form.get("day")
 
         # Insert the user's entry into the database
-        db.execute("INSERT INTO birthdays (name, month, day) VALUES(?, ?, ?)", name, month, day)
+        db.execute("INSERT INTO birthdays name, month, day) VALUES(?, ?, ?)", name, month, day)
 
         # Go back to homepage
         return redirect("/")
