@@ -1,27 +1,40 @@
 from cs50 import SQL
-from flask import Flask, redirect, render_template, request
+from flask import Flask, redirect, render_template, request, session
+from flask_session import Session
 
 # Create Flask App
 app = Flask(__name__)
 
-# This allows templates to auto reload when their content are changed
+""" This allows templates to auto reload when their content are changed """
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
-# Connects local sqlite database using cs50 library
+# Configure session
+app.config["SESSION_PERMANENT"] = False
+""" Use the server's filesystem to track the user's session """
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+# Connect to local sqlite database using cs50 library
 db = SQL("sqlite:///birthdays.db")
 
-# Login page
-"""
-@app.route("/login")
-def login():
+# Define route for sign-in page
+@app.route("/signin", methods=["GET","POST"])
+def signin():
     if request.method == "POST":
-"""
+          session["username"] = request.form.get("username")
+          return redirect("/")
+    return render_template("signin.html")
 
-# Define primary route
+
+# Define default route - main page (index.html)
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if request.method == "POST":
+    """ If we can't find a username, the user has not logged in, so redirect to the 
+        sign in page """
+    if not session.get("username"):
+        return redirect("/signin")
 
+    if request.method == "POST":
         # Request form data from user into flask backend
         name = request.form.get("name")
         month = request.form.get("month")
@@ -40,6 +53,8 @@ def index():
 
         # Render birthdays page
         return render_template("index.html", birthdays=birthdays)
+
+
 
 @app.route("/deleteEntry", methods=["POST"])
 def deleteEntry():
