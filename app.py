@@ -11,15 +11,11 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQL("sqlite:///birthdays.db")
 
 # Login page
+"""
 @app.route("/login")
 def login():
     if request.method == "POST":
-        
-
-
-
-
-
+"""
 
 # Define primary route
 @app.route("/", methods=["GET", "POST"])
