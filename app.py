@@ -17,13 +17,13 @@ Session(app)
 # Connect to local sqlite database using cs50 library
 db = SQL("sqlite:///birthdays.db")
 
-# Define route for sign-in page
-@app.route("/signin", methods=["GET","POST"])
-def signin():
+# Define route for login page
+@app.route("/login", methods=["GET","POST"])
+def login():
     if request.method == "POST":
           session["username"] = request.form.get("username")
           return redirect("/")
-    return render_template("signin.html")
+    return render_template("login.html")
 
 
 # Define default route - main page (index.html)
@@ -32,7 +32,7 @@ def index():
     """ If we can't find a username, the user has not logged in, so redirect to the 
         sign in page """
     if not session.get("username"):
-        return redirect("/signin")
+        return redirect("/login")
 
     if request.method == "POST":
         # Request form data from user into flask backend
@@ -55,7 +55,7 @@ def index():
         return render_template("index.html", birthdays=birthdays)
 
 
-
+# Define route for deleting entry
 @app.route("/deleteEntry", methods=["POST"])
 def deleteEntry():
     id = request.form.get("id")
@@ -63,3 +63,9 @@ def deleteEntry():
         db.execute("DELETE FROM birthdays WHERE id = ?", id)
     return redirect("/")
 
+
+# Define route for logging out
+@app.route("/logout")
+def logout():
+    session["username"] = None
+    return redirect("/")
