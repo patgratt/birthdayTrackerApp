@@ -15,9 +15,27 @@ body {
     margin-bottom: 1rem;
 }
 
-#floatingInput {
+#login-button {
     margin-bottom: 1rem;
 }
+
+#line {
+    border-bottom: 1px solid;
+    margin: 1rem;
+}
+
+#register-button {
+    margin-top: 1rem;
+    background-color: green;
+}
+
+
+
+
+
+
+
+
 
 .form-signin {
     max-width: 330px;
@@ -90,3 +108,4 @@ body {
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 }
+

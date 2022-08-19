@@ -17,6 +17,7 @@ Session(app)
 # Connect to local sqlite database using cs50 library
 db = SQL("sqlite:///birthdays.db")
 
+
 # Define route for login page
 @app.route("/login", methods=["GET","POST"])
 def login():
@@ -26,7 +27,22 @@ def login():
     return render_template("login.html")
 
 
-# Define default route - main page (index.html)
+# Define route for register page
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    """ if user requests the registration page via get (via the button on the 
+        login page) display the registration form"""
+    if request.method == "GET":
+        return render_template("register.html")
+    
+
+
+
+
+
+
+
+# Define main app page (index.html)
 @app.route("/", methods=["GET", "POST"])
 def index():
     """ If we can't find a username, the user has not logged in, so redirect to the 
