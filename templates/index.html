@@ -17,9 +17,9 @@
     <header>
         <div class="login-status">
         {% if session["username"] %}
-            You are logged in as {{ session["username"] }}. <a href="/logout">Log out</a>.
+            Welcome to myBirthdays, {{ session["username"] }}! <a href="/logout">Log out</a>.
         {% else %}
-            You are not logged in. <a href="/login">Log in</a>.
+            You are not logged in. This shouldn't be possible. <a href="/login">Log in</a>.
         {% endif %}
         </div>
     </header>
@@ -60,8 +60,8 @@
                         <td>{{ birthday.month }}/{{ birthday.day }}</td>
                         <td>
                             <form action="/deleteEntry" method="post">
-                                <input name="id" type="hidden" value="{{ birthday.id }}">
-                                <input type="submit" value="Delete Entry">
+                                <input type="hidden" name="entry_id" value="{{ birthday.id }}">
+                                <input type="submit" value="Delete">
                             </form>
                         </td>
                     </tr>

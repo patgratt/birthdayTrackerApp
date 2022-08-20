@@ -31,7 +31,6 @@ def after_request(response):
 db = SQL("sqlite:///birthdaytracker.db")
 
 # Create db tables 
-
 db.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT NOT NULL, hash TEXT NOT NULL);")
 
 db.execute("CREATE TABLE IF NOT EXISTS birthdays (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, month INTEGER NOT NULL, day INTEGER NOT NULL, user_id INTEGER NOT NULL, FOREIGN KEY(user_id) REFERENCES users(user_id));")
@@ -70,11 +69,10 @@ def login():
         """ If everything checks out, user has successfully logged in, so
             redirect the user to the main page """
         return redirect("/")
-
-    # If user reached this route via GET (via typing in the URL, clicking a link,
-    # or via some redirect (such as by clicking the logout button),
-    # render the login page
-    else:
+    """ If user reached this route via GET (via typing in the URL, clicking a link,
+        or via some redirect (such as by clicking the logout button),
+        render the login page """
+    if request.method == "GET":
         return render_template("login.html")
 
 
@@ -95,7 +93,6 @@ def register():
     #   requesting to load the page """
     if request.method == "GET":
         return render_template("register.html")
-
     # If user requests via POST, meaning they've submitted the form """
     if request.method == "POST":
         # """ Request the data that was submitted into the form from html and store
@@ -111,7 +108,7 @@ def register():
         if password != confirmation:
             return apology("The passwords you entered didn't match dude. Do it again.", 998)
         if len(db.execute("SELECT username FROM users WHERE username = ?", username)) > 0:
-            return apology("The username that you entered has already been taken! Wow someone actually used this app! Try a different username pls", 997)
+            return apology("The username that you entered has already been taken! Try a different username please!", 997)
         # """ Assuming we made it past the error checks, 
         #   enter information for user's newly created account into our database """
         db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
@@ -135,11 +132,9 @@ def index():
         their entries"""
     if request.method == "GET":
         # Query for all birthdays
-        birthdays_rows = db.execute("SELECT name, month, day FROM birthdays WHERE user_id = ?", current_user_id)
+        birthdays_rows = db.execute("SELECT name, month, day, id FROM birthdays WHERE user_id = ?", current_user_id)
         # Render birthdays page
         return render_template("index.html", birthdays=birthdays_rows)
-
-
 
     """ This handles adding a new entry"""
     if request.method == "POST":
@@ -147,23 +142,23 @@ def index():
         name = request.form.get("name")
         month = request.form.get("month")
         day = request.form.get("day")
-
         # Insert the user's entry into the database
         db.execute("INSERT INTO birthdays (user_id, name, month, day) VALUES(?, ?, ?, ?)", current_user_id, name, month, day)
-
         # Reloads the page with new entry
         return redirect("/")
-
-    
 
 
 # Define route for deleting entry
 @app.route("/deleteEntry", methods=["POST"])
 @login_required
 def deleteEntry():
-    id = request.form.get("id")
-    if id:
-        db.execute("DELETE FROM birthdays WHERE id = ?", id)
+    print("hello", flush=True)
+    entry_id = request.form.get("entry_id")
+    if entry_id:
+        print('good', flush=True)
+        db.execute("DELETE FROM birthdays WHERE id = ?", entry_id)
+    if not entry_id:
+        print('no good', flush=True)
     return redirect("/")
 
 
