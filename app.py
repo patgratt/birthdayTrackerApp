@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required
 
-# Create Flask App
+# Create Flask App object
 app = Flask(__name__)
 
 """ This allows templates to auto reload when their content are changed """
