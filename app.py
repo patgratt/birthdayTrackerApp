@@ -18,9 +18,6 @@ app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
-# Connect to local sqlite database using cs50 library
-db = SQL("sqlite:///birthdaytracker.db")
-
 # Ensure responses aren't cached
 @app.after_request
 def after_request(response):
@@ -30,13 +27,23 @@ def after_request(response):
     return response
 
 
+# Connect to local sqlite database using cs50 library
+db = SQL("sqlite:///birthdaytracker.db")
+
+# Create db tables 
+
+db.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT NOT NULL, hash TEXT NOT NULL);")
+
+db.execute("CREATE TABLE IF NOT EXISTS birthdays (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, month INTEGER NOT NULL, day INTEGER NOT NULL, user_id INTEGER NOT NULL, FOREIGN KEY(user_id) REFERENCES users(user_id));")
+
+db.execute("CREATE INDEX IF NOT EXISTS birthdays_by_user_id_index ON birthdays (user_id);")                               
+
+
 # Define route for login page
 @app.route("/login", methods=["GET","POST"])
 def login():
-
     """ Ensure that session is not remembering some previous user """
     session.clear()
-
     """ If user reached this route via POST (via submitting a form) """
     if request.method == "POST":
 
@@ -57,7 +64,8 @@ def login():
             return apology("invalid username and/or password", 403)
 
         # Remember which user has logged in
-        session["user_id"] = users_rows[0]["id"]
+        session["user_id"] = users_rows[0]["user_id"]
+        session["username"] = users_rows[0]["username"]
 
         """ If everything checks out, user has successfully logged in, so
             redirect the user to the main page """
@@ -94,8 +102,8 @@ def register():
         #   it in python variables; the parameter on this get method corresponds 
         #   to the name attribute on the input element """
         username = request.form.get("username")
-        password = request.form.get("password1")
-        confirmation = request.form.get("password2")
+        password = request.form.get("password")
+        confirmation = request.form.get("confirmation")
         # Error checks on the form
         # I'm gonna make up some error codes for fun
         if username == "" or password == "" or confirmation == "":
@@ -108,21 +116,32 @@ def register():
         #   enter information for user's newly created account into our database """
         db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
         # Query database for username
-        rows = db.execute("SELECT * FROM users WHERE username = ?", username)
-        # Log user in ?????
-        session["user_id"] = rows[0]["id"]
+        users_rows = db.execute("SELECT * FROM users WHERE username = ?", username)
+        # Get user info from database into session dictionary
+        session["user_id"] = users_rows[0]["user_id"]
+        session["username"] = username
         # Redirect user to main page
         return redirect("/")
 
 
 # Define main app page (index.html)
 @app.route("/", methods=["GET", "POST"])
+@login_required
 def index():
-    """ If we can't find a username, the user has not logged in, so redirect to the 
-        sign in page """
-    if not session.get("username"):
-        return redirect("/login")
+    current_user_id = session.get("user_id")
+    current_username = session.get("username")
 
+    """ User is accessing page via GET, meaning they are logged in and are simply viewing
+        their entries"""
+    if request.method == "GET":
+        # Query for all birthdays
+        birthdays_rows = db.execute("SELECT name, month, day FROM birthdays WHERE user_id = ?", current_user_id)
+        # Render birthdays page
+        return render_template("index.html", birthdays=birthdays_rows)
+
+
+
+    """ This handles adding a new entry"""
     if request.method == "POST":
         # Request form data from user into flask backend 
         name = request.form.get("name")
@@ -130,18 +149,12 @@ def index():
         day = request.form.get("day")
 
         # Insert the user's entry into the database
-        db.execute("INSERT INTO birthdays (name, month, day) VALUES(?, ?, ?)", name, month, day)
+        db.execute("INSERT INTO birthdays (user_id, name, month, day) VALUES(?, ?, ?, ?)", current_user_id, name, month, day)
 
-        # Go back to homepage
+        # Reloads the page with new entry
         return redirect("/")
 
-    else:
-
-        # Query for all birthdays
-        birthdays = db.execute("SELECT * FROM birthdays")
-
-        # Render birthdays page
-        return render_template("index.html", birthdays=birthdays)
+    
 
 
 # Define route for deleting entry
