@@ -88,16 +88,16 @@ def logout():
 # Define route for registration page
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    # """" If user requests the registration page via get (via the button on the 
-    #   login page) display the registration form; this is simply if they are
-    #   requesting to load the page """
+    """" If user requests the registration page via get (via the button on the 
+         login page) display the registration form; this is simply if they are
+         requesting to load the page """
     if request.method == "GET":
         return render_template("register.html")
     # If user requests via POST, meaning they've submitted the form """
     if request.method == "POST":
-        # """ Request the data that was submitted into the form from html and store
-        #   it in python variables; the parameter on this get method corresponds 
-        #   to the name attribute on the input element """
+        """ Request the data that was submitted into the form from html and store
+            it in python variables; the parameter on this get method corresponds 
+            to the name attribute on the input element """
         username = request.form.get("username")
         password = request.form.get("password")
         confirmation = request.form.get("confirmation")
@@ -109,8 +109,8 @@ def register():
             return apology("The passwords you entered didn't match dude. Do it again.", 998)
         if len(db.execute("SELECT username FROM users WHERE username = ?", username)) > 0:
             return apology("The username that you entered has already been taken! Try a different username please!", 997)
-        # """ Assuming we made it past the error checks, 
-        #   enter information for user's newly created account into our database """
+        """ Assuming we made it past the error checks, 
+            enter information for user's newly created account into our database """
         db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
         # Query database for username
         users_rows = db.execute("SELECT * FROM users WHERE username = ?", username)
@@ -152,13 +152,9 @@ def index():
 @app.route("/deleteEntry", methods=["POST"])
 @login_required
 def deleteEntry():
-    print("hello", flush=True)
     entry_id = request.form.get("entry_id")
     if entry_id:
-        print('good', flush=True)
         db.execute("DELETE FROM birthdays WHERE id = ?", entry_id)
-    if not entry_id:
-        print('no good', flush=True)
     return redirect("/")
 
 
