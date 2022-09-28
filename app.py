@@ -8,13 +8,12 @@ from helpers import apology, login_required
 # Create Flask App object
 app = Flask(__name__)
 
-""" This allows templates to auto reload when their content are changed """
+# This allows templates to auto reload when their content are changed
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 # Configure session
 app.config["SESSION_PERMANENT"] = False
-""" Use the server's filesystem to track the user's session 
-    (rather than signed cookies) """
+# Use the server's filesystem to track the user's session (rather than signed cookies)
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
@@ -41,9 +40,9 @@ db.execute("CREATE INDEX IF NOT EXISTS birthdays_by_user_id_index ON birthdays (
 # Define route for login page
 @app.route("/login", methods=["GET","POST"])
 def login():
-    """ Ensure that session is not remembering some previous user """
+    # Ensure that session is not remembering some previous user
     session.clear()
-    """ If user reached this route via POST (via submitting a form) """
+    # If user reached this route via POST (via submitting a form)
     if request.method == "POST":
 
         # Ensure username was submitted
@@ -66,8 +65,7 @@ def login():
         session["user_id"] = users_rows[0]["user_id"]
         session["username"] = users_rows[0]["username"]
 
-        """ If everything checks out, user has successfully logged in, so
-            redirect the user to the main page """
+        # If everything checks out, user has successfully logged in, so redirect the user to the main page
         return redirect("/")
     """ If user reached this route via GET (via typing in the URL, clicking a link,
         or via some redirect (such as by clicking the logout button),
@@ -93,7 +91,7 @@ def register():
          requesting to load the page """
     if request.method == "GET":
         return render_template("register.html")
-    # If user requests via POST, meaning they've submitted the form """
+    # If user requests via POST, meaning they've submitted the form
     if request.method == "POST":
         """ Request the data that was submitted into the form from html and store
             it in python variables; the parameter on this get method corresponds 
@@ -109,8 +107,7 @@ def register():
             return apology("The passwords you entered didn't match dude. Do it again.", 998)
         if len(db.execute("SELECT username FROM users WHERE username = ?", username)) > 0:
             return apology("The username that you entered has already been taken! Try a different username please!", 997)
-        """ Assuming we made it past the error checks, 
-            enter information for user's newly created account into our database """
+        # Assuming we made it past the error checks, enter information for user's newly created account into our database
         db.execute("INSERT INTO users (username, hash) VALUES(?, ?)", username, generate_password_hash(password))
         # Query database for username
         users_rows = db.execute("SELECT * FROM users WHERE username = ?", username)
@@ -128,15 +125,14 @@ def index():
     current_user_id = session.get("user_id")
     current_username = session.get("username")
 
-    """ User is accessing page via GET, meaning they are logged in and are simply viewing
-        their entries"""
+    # User is accessing page via GET, meaning they are logged in and are simply viewing their entries
     if request.method == "GET":
         # Query for all birthdays
         birthdays_rows = db.execute("SELECT name, month, day, id FROM birthdays WHERE user_id = ?", current_user_id)
         # Render birthdays page
         return render_template("index.html", birthdays=birthdays_rows)
 
-    """ This handles adding a new entry"""
+    # This handles adding a new entry
     if request.method == "POST":
         # Request form data from user into flask backend 
         name = request.form.get("name")
