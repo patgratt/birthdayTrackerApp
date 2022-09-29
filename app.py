@@ -1,3 +1,4 @@
+import os
 from cs50 import SQL
 from flask import Flask, redirect, render_template, request, session
 from flask_session import Session
@@ -26,8 +27,12 @@ def after_request(response):
     return response
 
 
-# Connect to local sqlite database using cs50 library
-db = SQL('sqlite:///birthdaytracker.db')
+# Connect to heroku postgreSQL db
+uri = os.getenv('postgres://ejyvngoejsrzfd:1680f8142be8328eae2b6bb7c0d15a67729e62a7db4b3cd9e17bb8ef2cf6ff51@ec2-3-219-19-205.compute-1.amazonaws.com:5432/d29kv06rvftvnu')
+if uri.startswith('postgres://'):
+    uri = uri.replace('postgres://', 'postgresql://')
+db = SQL(uri)
+
 
 # Create db tables 
 db.execute('''CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
