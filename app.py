@@ -36,7 +36,7 @@ db = SQL(uri)
 
 # Create db tables 
 db.execute('''CREATE TABLE IF NOT EXISTS users (
-                  user_id INT PRIMARY KEY AUTOINCREMENT NOT NULL,
+                  user_id SERIAL PRIMARY KEY,
                   username TEXT NOT NULL, 
                   hash TEXT NOT NULL);''')
 
