@@ -28,7 +28,7 @@ def after_request(response):
 
 
 # Connect to heroku postgreSQL db
-uri = os.getenv('postgres://ejyvngoejsrzfd:1680f8142be8328eae2b6bb7c0d15a67729e62a7db4b3cd9e17bb8ef2cf6ff51@ec2-3-219-19-205.compute-1.amazonaws.com:5432/d29kv06rvftvnu')
+uri = os.getenv('DATABASE_URL')
 if uri.startswith('postgres://'):
     uri = uri.replace('postgres://', 'postgresql://')
 db = SQL(uri)
