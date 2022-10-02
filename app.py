@@ -40,12 +40,13 @@ db.execute('''CREATE TABLE IF NOT EXISTS users (
                   username TEXT NOT NULL, 
                   hash TEXT NOT NULL);''')
 
-db.execute('''CREATE TABLE IF NOT EXISTS birthdays (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-                                                    name TEXT NOT NULL, 
-                                                    month INTEGER NOT NULL, 
-                                                    day INTEGER NOT NULL, 
-                                                    user_id INTEGER NOT NULL, 
-                                                    FOREIGN KEY(user_id) REFERENCES users(user_id));''')
+db.execute('''CREATE TABLE IF NOT EXISTS birthdays (
+                  id SERIAL PRIMARY KEY, 
+                  name TEXT NOT NULL, 
+                  month INTEGER NOT NULL, 
+                  day INTEGER NOT NULL, 
+                  user_id INTEGER NOT NULL, 
+                  FOREIGN KEY(user_id) REFERENCES users(user_id));''')
 
 db.execute('CREATE INDEX IF NOT EXISTS birthdays_by_user_id_index ON birthdays (user_id);')                               
 
