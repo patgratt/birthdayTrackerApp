@@ -35,7 +35,10 @@ db = SQL(uri)
 
 
 # Create db tables 
-db.execute('CREATE TABLE IF NOT EXISTS users (user_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, username TEXT NOT NULL, hash TEXT NOT NULL);')
+db.execute('''CREATE TABLE IF NOT EXISTS users (
+                  user_id INT PRIMARY KEY AUTOINCREMENT NOT NULL,
+                  username TEXT NOT NULL, 
+                  hash TEXT NOT NULL);''')
 
 db.execute('''CREATE TABLE IF NOT EXISTS birthdays (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
                                                     name TEXT NOT NULL, 
