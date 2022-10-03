@@ -1,7 +1,8 @@
-# birthdayTrackerApp
+# myBirthdays
 
-## DEMO VIDEO:
-https://youtu.be/fxdoX4mWXv0
+## View Live Hosted Version on Heroku:
+
+https://mybirthdays-patgratt.herokuapp.com
 
 ### Error codes that I have created for this app:
 - 999 = left one or more fields blank on the registration form

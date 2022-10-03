@@ -81,7 +81,7 @@ def login():
 
         # If everything checks out, user has successfully logged in, so redirect the user to the main page
         return redirect('/')
-        """If user reached this route via GET (via typing in the URL, clicking a link, or via some
+        """ If user reached this route via GET (via typing in the URL, clicking a link, or via some
              redirect (such as by clicking the logout button), then render the login page """
     if request.method == 'GET':
         return render_template('login.html')
