@@ -1,6 +1,6 @@
 # myBirthdays
 
-## View Live Hosted Version on Heroku:
+## View Live Hosted App on Heroku:
 
 https://mybirthdays-patgratt.herokuapp.com
 
